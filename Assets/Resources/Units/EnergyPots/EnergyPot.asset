@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 233633ba13f573c4fa7f60a9b173fac1, type: 3}
+  m_Name: EnergyPot
+  m_EditorClassIdentifier: 
+  Faction: 1
+  UnitPrefab: {fileID: 1543416708536393503, guid: 4a54f14771db7ed4ab9e7ce47f527291, type: 3}
