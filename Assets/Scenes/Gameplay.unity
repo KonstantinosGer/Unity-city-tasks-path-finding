@@ -238,9 +238,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 100
   _height: 100
+  scale: 1
   _grassTile: {fileID: -3417053288464324152, guid: 06d6aebba81e05d4b92c57934f820e81, type: 3}
   _mountainTile: {fileID: -6216368731758939767, guid: 4662d1be76ca2de47b04adde923eb888, type: 3}
   _cam: {fileID: 519420032}
+  findDistance: 1
+  path: []
+  startX: 0
+  startY: 0
+  endX: 5
+  endY: 5
 --- !u!4 &626480514
 Transform:
   m_ObjectHideFlags: 0
@@ -285,6 +292,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4b2e2df2f8981a40b0865fe41c46b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GoldCount: 0
+  EnergyPotCount: 0
 --- !u!4 &826126634
 Transform:
   m_ObjectHideFlags: 0

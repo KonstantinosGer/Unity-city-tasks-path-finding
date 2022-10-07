@@ -11,9 +11,14 @@ public abstract class Tile : MonoBehaviour
     public BaseUnit OccupiedUnit;
     public bool Walkable => _isWalkable && OccupiedUnit == null;
 
+    public int visited = -1;
+    public int x = 0;
+    public int y = 0;
+
     public virtual void Init(int x, int y)
     {
-   
+        this.x = x;
+        this.y = y;
     }
 
     void OnMouseEnter()
