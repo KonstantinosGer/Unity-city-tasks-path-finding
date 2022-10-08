@@ -5,12 +5,14 @@ using UnityEngine;
 
 public class Buildings : MonoBehaviour
 {
-    [SerializeField] private GameObject house;
+    [SerializeField] public GameObject bank;
+    [SerializeField] public GameObject woodStore;
+    [SerializeField] public GameObject toolStore;
 
     void Start()
     {
-        // Instantiate at position (0, 0, 0) and zero rotation.
-        Instantiate(house, new Vector3(11, 85, 0), Quaternion.identity);
-        Instantiate(house, new Vector3(11, 50, 0), Quaternion.identity);
+        Instantiate(bank, new Vector3(80, 5, 0), Quaternion.identity);
+        Instantiate(woodStore, new Vector3(10, 50, 0), Quaternion.identity);
+        Instantiate(toolStore, new Vector3(40, 50, 0), Quaternion.identity);
     }
 }

@@ -265,7 +265,7 @@ public class GridManager : MonoBehaviour
             y = tempTile.y;
             tempList.Clear();
 
-            print("tempTile: "+tempTile);
+            //print("tempTile: " + tempTile);
         }
 
     }

@@ -1,26 +1,38 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    //////
-    public GameObject player;
+    [SerializeField] public int numberOfAgents;
+    [SerializeField] public GameObject agent;
+    [SerializeField] public GameObject house;
+    [SerializeField] public GameObject bank;
+    [SerializeField] public GameObject woodStore;
+    [SerializeField] public GameObject toolStore;
     [SerializeField] private float moveSpeed;
-    //////
+
+    public List<Tile> housesList = new();
     public Vector3 target;
+    private float constant = 0.35f;
+
 
     // Start is called before the first frame update
     void Start()
     {
 
         //controller = GetComponent<CharacterController>();
-        player = GameObject.Find("Sphere");
+        //player = GameObject.Find("Sphere");
 
         // Start possition
-        player.transform.position = new Vector3(0, 0, 0);
+        //agent.transform.position = new Vector3(0, 0, 0);
+        //house.transform.position= new Vector3(5, 0, 5);
+        Instantiate(agent, new Vector3(0, (float)(0 + constant), 0), Quaternion.identity);
+        Instantiate(house, new Vector3(5, 5, 0), Quaternion.identity);
+        
+
 
     }
 
@@ -73,11 +85,11 @@ public class PlayerMovement : MonoBehaviour
 
         target = new Vector3(element.GetComponent<GridStat>().x, 0, element.GetComponent<GridStat>().y);
 
-        while (player.transform.position != target)
-            player.transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+        while (agent.transform.position != target)
+            agent.transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
 
         //Target Reached
-        Debug.Log(player.transform.position);
+        Debug.Log(agent.transform.position);
     }
 
 }
