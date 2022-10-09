@@ -6,7 +6,9 @@ public abstract class Tile : MonoBehaviour
 {
     [SerializeField] protected SpriteRenderer _renderer;
     [SerializeField] private GameObject _highlight;
-    [SerializeField] private bool _isWalkable;
+    [SerializeField] public bool _isWalkable;
+    //public Renderer mountainTileColor;
+    
 
     public BaseUnit OccupiedUnit;
     public bool Walkable => _isWalkable && OccupiedUnit == null;

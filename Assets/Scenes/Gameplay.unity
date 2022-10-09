@@ -123,6 +123,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &240496391
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 240496392}
+  - component: {fileID: 240496393}
+  m_Layer: 0
+  m_Name: Agent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &240496392
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240496391}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 51.866577, y: 66.659485, z: -0.27222827}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &240496393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240496391}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48eed49d5241f414eae85fa93b3cf3fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numberOfAgents: 10
+  agent: {fileID: 1683322886944686, guid: 6a24460a842bf0c45961f10339b84555, type: 3}
+  house: {fileID: 5973705207219932342, guid: e4aa6093104c719488da0e9b37f5bb53, type: 3}
+  moveSpeed: 0
+  target: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,6 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2a2b4a456d33d547a7912fe02c41c24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  count: 0
   _width: 100
   _height: 100
   scale: 1
@@ -307,7 +357,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1061931898
 GameObject:
@@ -352,61 +402,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1455171213
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1455171215}
-  - component: {fileID: 1455171216}
-  m_Layer: 0
-  m_Name: Agent_1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1455171215
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1455171213}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.9010063, y: 0.26210013, z: -0.0142524745}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1455171216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1455171213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48eed49d5241f414eae85fa93b3cf3fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  numberOfAgents: 1
-  agent: {fileID: 1683322886944686, guid: 89044609a918cff42bb32628455cc6fd, type: 3}
-  house: {fileID: 5973705207219932342, guid: e4aa6093104c719488da0e9b37f5bb53, type: 3}
-  bank: {fileID: 0}
-  woodStore: {fileID: 0}
-  toolStore: {fileID: 0}
-  moveSpeed: 0
-  housesList: []
-  target: {x: 0, y: 0, z: 0}
 --- !u!1 &1825115195
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,7 +435,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bank: {fileID: 6170832304563968273, guid: b8abbf276ed0b57458e6637a77f77e7c, type: 3}
   woodStore: {fileID: 858029468269153299, guid: 364733d75a7be6f42a2d70b83dc775b0, type: 3}
-  toolStore: {fileID: 8069664872877197611, guid: a4fa8b5d3a0a83d40ab8a0e60f2a1bb8, type: 3}
+  toolStore: {fileID: 5128209221215061405, guid: 8970b9bab3f4f234a986c0977785bdc5, type: 3}
+  buildingsTiles: []
 --- !u!4 &1825115197
 Transform:
   m_ObjectHideFlags: 0
@@ -452,5 +450,5 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

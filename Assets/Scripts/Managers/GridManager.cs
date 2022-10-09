@@ -7,16 +7,19 @@ using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {
+    //
+    public int count = 0;
+    //
     public static GridManager Instance;
 
-    [SerializeField] private int _width, _height;
+    [SerializeField] public int _width, _height;
     public int scale = 1;
 
     [SerializeField] private Tile _grassTile, _mountainTile;
 
     [SerializeField] private Transform _cam;
 
-    private Dictionary<Vector2, Tile> _tiles;
+    public Dictionary<Vector2, Tile> _tiles;
 
     public bool findDistance = true;
     public List<Tile> path = new List<Tile>();
@@ -30,11 +33,13 @@ public class GridManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        GenerateGrid();
+        
     }
 
     void Start()
     {
-        GenerateGrid();
+        //GenerateGrid();
         //Debug.Log(GetTileAtPosition(myVector));
     }
 
@@ -53,7 +58,6 @@ public class GridManager : MonoBehaviour
 
 
 
-
             path.Reverse();
             // Call MovePlayer from PlayerMovement script
             //player.GetComponent<PlayerMovement>().MovePlayer(path);
@@ -65,6 +69,41 @@ public class GridManager : MonoBehaviour
         }
     }
 
+
+
+    public bool isBuildingEntrance(int x, int y)
+    {
+        if(x == 53 && y == 82)
+        {
+            return true;
+        }
+        if(x == 83 && y == 28)
+        {
+            return true;
+        }
+        if(x == 19 && y == 52)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool isBuildingArea(int x, int y)
+    {
+        if(x >= 43 && x <= 57 && y >= 83 && y <= 97)
+        {
+            return true;
+        }
+        if(x >= 8 && x <= 18 && y >= 52 && y <= 62)
+        {
+            return true;
+        }
+        if(x >= 84 && x <= 94 && y >= 28 && y <= 38)
+        {
+            return true;
+        }
+        return false;
+    }
     public void GenerateGrid()
     {
         _tiles = new Dictionary<Vector2, Tile>();
@@ -72,7 +111,7 @@ public class GridManager : MonoBehaviour
         {
             for (int j = 0; j < _height; j++)
             {
-                var randomTile = Random.Range(0, 4) == 3 && (i > _width / 5 && i < _width * 4/5)? _mountainTile : _grassTile;  // if random generator returns 3 then assign a mountainTile, else grasstile
+                var randomTile = Random.Range(0, 12) == 3 && (!isBuildingEntrance(i,j) && !isBuildingArea(i,j))? _mountainTile : _grassTile;  // if random generator returns 3 then assign a mountainTile, else grasstile
                 var spawnedTile = Instantiate(randomTile, new Vector3(i, j), Quaternion.identity);
 
                 spawnedTile.transform.SetParent(gameObject.transform);
@@ -95,13 +134,18 @@ public class GridManager : MonoBehaviour
         //GameManager.Instance.ChangeState(GameState.SpawnGold);
     }
 
+    
+
     //getSpawnTile for gold and energyPot
     public Tile GetSpawnTile()
     {
+        count++;
+        print("i make a coin or potion. Count: "+count);
         return _tiles.Where(t => t.Value.Walkable).OrderBy(t => Random.value).First().Value;
+        // && !Buildings.Instance.buildingsTiles.Contains(_tiles[t.Key])
     }
 
-    
+
     public Tile GetNonWalkableTile()
     {
         return _tiles.Where(t => t.Key.x < _width / 4).OrderBy(t => Random.value).First().Value;

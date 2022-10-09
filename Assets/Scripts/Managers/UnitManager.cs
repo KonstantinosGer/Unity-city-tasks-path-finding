@@ -18,7 +18,6 @@ public class UnitManager : MonoBehaviour
         Instance = this;
 
         _units = Resources.LoadAll<ScriptableUnit>("Units").ToList();
-
     }
 
     void Start()
@@ -37,6 +36,11 @@ public class UnitManager : MonoBehaviour
             var spawnedGold = Instantiate(randomPrefab);
             var randomSpawnTile = GridManager.Instance.GetSpawnTile();
 
+            if (Buildings.Instance.buildingsTiles.Contains(randomSpawnTile))
+            {
+                randomSpawnTile.OccupiedUnit = spawnedGold;
+                spawnedGold.OccupiedTile = randomSpawnTile;
+            }
             //see Tile script 
             randomSpawnTile.SetUnit(spawnedGold);
         }
@@ -53,6 +57,12 @@ public class UnitManager : MonoBehaviour
             var randomPrefab = GetRandomUnit<BaseEnergyPot>(Faction.EnergyPot);
             var spawnedEnergyPot = Instantiate(randomPrefab);
             var randomSpawnTile = GridManager.Instance.GetSpawnTile();
+
+            if (Buildings.Instance.buildingsTiles.Contains(randomSpawnTile))
+            {
+                randomSpawnTile.OccupiedUnit = spawnedEnergyPot;
+                spawnedEnergyPot.OccupiedTile = randomSpawnTile;
+            }
 
             randomSpawnTile.SetUnit(spawnedEnergyPot);
         }
