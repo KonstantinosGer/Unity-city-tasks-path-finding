@@ -30,6 +30,8 @@ public class AgentMovement : MonoBehaviour
     int houseX;
     int houseY;
 
+    public Dictionary<int, Agent> agents;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -113,10 +115,12 @@ public class AgentMovement : MonoBehaviour
             agentVector = new Vector2(agentStartX, agentStartY);
             Buildings.Instance.buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(agentVector));
 
-
-            Agent currentAgent = new Agent(i, 100, 0, 0, agentStartX, agentStartY, agentStartX, agentStartY, 53, 82);
+            // TODO -> print agent for debugging
+            Agent currentAgent = new Agent(i, 100, 0, 0, agentStartX, agentStartY, agentStartX, agentStartY, 53, 82, agent);
+            agents.Add(i, currentAgent);
 
         }
+        GridManager.Instance.findDistance = true;
     }
 
     public bool isHouseInsideAnotherBuilding(int bottomLeftX, int bottomLeftY, int topRightX, int topRightY)
@@ -177,18 +181,18 @@ public class AgentMovement : MonoBehaviour
     //}
 
 
-    public void MovePlayer(GameObject element)
+    public void MovePlayer(Tile element, GameObject myAgent)
     {
         //Target
-        Debug.Log("X: " + element.GetComponent<GridStat>().x + ", Y: " + element.GetComponent<GridStat>().y);
+        Debug.Log("X: " + element.x + ", Y: " + element.y);
 
-        target = new Vector3(element.GetComponent<GridStat>().x, 0, element.GetComponent<GridStat>().y);
+        target = new Vector2(element.x,element.y);
 
-        while (agent.transform.position != target)
-            agent.transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+        while (myAgent.transform.position != target)
+            myAgent.transform.position = Vector2.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
 
         //Target Reached
-        Debug.Log(agent.transform.position);
+        Debug.Log(myAgent.transform.position);
     }
 
 }

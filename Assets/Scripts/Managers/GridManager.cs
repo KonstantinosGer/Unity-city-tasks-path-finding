@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Burst.CompilerServices;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -20,8 +21,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Transform _cam;
 
     public Dictionary<Vector2, Tile> _tiles;
+    public Dictionary<int, List<Tile>> agentsPaths; // store path for each of (numberOfAgents) agent
 
-    public bool findDistance = true;
+    public bool findDistance = false;
     public List<Tile> path = new List<Tile>();
     public int startX = 0;
     public int startY = 0;
@@ -48,19 +50,30 @@ public class GridManager : MonoBehaviour
         if (findDistance)
         {
 
-            InitialSetUp();
+            for (int i = 1; i <= AgentMovement.Instance.numberOfAgents; i++)
+            {
+                InitialSetUp(i);
+
+                // Propagate all the numbers
+                SetDistance();
+                // Give us an array
+                SetPath(i);
 
 
-            // Propagate all the numbers
-            SetDistance();
-            // Give us an array
-            SetPath();
+                path.Reverse();
+                agentsPaths[i] = path;
+            }
 
-
-
-            path.Reverse();
-            // Call MovePlayer from PlayerMovement script
+            // Call MovePlayer from AgentMovement script
             //player.GetComponent<PlayerMovement>().MovePlayer(path);
+            for (int i = 1; i <= AgentMovement.Instance.numberOfAgents; i++)
+            {
+                Agent currentAgent = AgentMovement.Instance.agents[i];
+                foreach(Tile tile in agentsPaths[i])
+                {
+                    AgentMovement.Instance.MovePlayer(tile, currentAgent.assetPrefab);
+                }
+            }
 
 
 
@@ -160,16 +173,17 @@ public class GridManager : MonoBehaviour
 
 
     // Set up the gridArray so we can label the points
-    void InitialSetUp()
+    void InitialSetUp(int agentId)
     {
         foreach (var tile in _tiles)
         {
             // At first, label everything as -1
             tile.Value.visited = -1;
-            //print("tile: "+tile+ ", visited: "+tile.Value.visited);
         }
         // Only starting position is labeled with 0
-        myVector = new Vector2(startX, startY);
+        Agent currentAgent = AgentMovement.Instance.agents[agentId];
+        myVector = new Vector2(currentAgent.routeStartPointX, currentAgent.routeStartPointY);
+        //myVector = new Vector2(startX, startY);
         _tiles[myVector].visited = 0;
     }
 
@@ -241,11 +255,13 @@ public class GridManager : MonoBehaviour
     }
 
 
-    void SetPath()
+    void SetPath(int agentId)
     {
         int step;
-        int x = endX;
-        int y = endY;
+        Agent currentAgent = AgentMovement.Instance.agents[agentId];
+        //myVector = new Vector2(currentAgent.route, currentAgent.routeStartPointY);
+        int x = currentAgent.routeEndPointX;
+        int y = currentAgent.routeEndPointY;
         List<Tile> tempList = new List<Tile>();
         // At first, clear any path i might already have
         path.Clear();
@@ -253,7 +269,6 @@ public class GridManager : MonoBehaviour
         // Make sure gridArray[endX, endY] exists
         // And it must be > 0
         // if it's -1, it means we can't get there
-        myVector = new Vector2(endX, endY);
         if (_tiles[myVector] && _tiles[myVector].visited > 0)
         {
             // Add it to our path
@@ -302,7 +317,7 @@ public class GridManager : MonoBehaviour
             // We have a path
             // It finds the shortest object, out of the four arround my current possision (out of all four directions)
             // And then puts the shortest one in the path
-            myVector = new Vector2(endX, endY);
+            myVector = new Vector2(x, y);
             Tile tempTile = FindClosest(_tiles[myVector].transform, tempList);
             path.Add(tempTile);
             x = tempTile.x;

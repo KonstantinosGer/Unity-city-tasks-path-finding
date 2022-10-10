@@ -13,11 +13,12 @@ public class Agent : MonoBehaviour
     public int startX, startY;
     public int routeStartPointX,routeStartPointY;
     public int routeEndPointX,routeEndPointY;
+    public GameObject assetPrefab;
 
     //agents' plan
     public Dictionary<string, Vector2> plan;
 
-    public Agent(int id, int energyPoints, int numberOfCoins, int numberOfEnergyPots, int startX, int startY, int routeStartPointX, int routeStartPointY, int routeEndPointX, int routeEndPointY)
+    public Agent(int id, int energyPoints, int numberOfCoins, int numberOfEnergyPots, int startX, int startY, int routeStartPointX, int routeStartPointY, int routeEndPointX, int routeEndPointY, GameObject assetPrefab)
     {
         this.id = id;
         this.energyPoints = energyPoints;
@@ -29,6 +30,8 @@ public class Agent : MonoBehaviour
         this.routeStartPointY = routeStartPointY;
         this.routeEndPointX = routeEndPointX;
         this.routeEndPointY = routeEndPointY;
+
+        this.assetPrefab = assetPrefab;
     }
 
     void Start()
