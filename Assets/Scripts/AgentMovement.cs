@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using Unity.Burst.CompilerServices;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -30,7 +31,13 @@ public class AgentMovement : MonoBehaviour
     int houseX;
     int houseY;
 
-    public Dictionary<int, Agent> agents;
+    //public Dictionary<int, Agent> agents;
+
+    //public Dictionary<int, List<int>> agentsAttributes;
+    //public Dictionary<int, GameObject> agentsGObj;
+
+    public GameObject[] agentsGObj = new GameObject[10];
+    public int[,] agentsAttributes = new int[10, 9];
 
 
     // Start is called before the first frame update
@@ -47,7 +54,7 @@ public class AgentMovement : MonoBehaviour
 
     public void generateHousesAndAgents()
     {
-        for (int i = 1; i <= numberOfAgents; i++)
+        for (int i = 0; i < numberOfAgents; i++)
         {
             do
             {
@@ -89,11 +96,11 @@ public class AgentMovement : MonoBehaviour
             {
                 for (int y = bottomLeftY; y <= topRightY; y++)
                 {
-                    GridManager.Instance.count++;
-                    print("House. Count: " + GridManager.Instance.count +", X: "+x+", Y: "+y);
+                    //GridManager.Instance.count++;
+                    //print("House. Count: " + GridManager.Instance.count +", X: "+x+", Y: "+y);
                     myVector = new Vector2(x, y);
                     Buildings.Instance.buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
-                    GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
+                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
 
                     /*
@@ -116,8 +123,51 @@ public class AgentMovement : MonoBehaviour
             Buildings.Instance.buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(agentVector));
 
             // TODO -> print agent for debugging
-            Agent currentAgent = new Agent(i, 100, 0, 0, agentStartX, agentStartY, agentStartX, agentStartY, 53, 82, agent);
-            agents.Add(i, currentAgent);
+            //Agent currentAgent = new(i, 100, 0, 0, agentStartX, agentStartY, agentStartX, agentStartY, 53, 82, agent);
+            //Agent currentAgent = gameObject.AddComponent<Agent>();
+            //currentAgent.id = i;j
+            //currentAgent.energyPoints = 100;
+            //currentAgent.numberOfCoins = 0;
+            //currentAgent.numberOfEnergyPots = 0;
+            //currentAgent.startX = agentStartX;
+            //currentAgent.startY = agentStartY;
+            //currentAgent.routeStartPointX = agentStartX;
+            //currentAgent.routeStartPointY = agentStartY;
+            //currentAgent.routeEndPointX = 53;
+            //currentAgent.routeEndPointY = 82;
+            //currentAgent.assetPrefab = agent;
+            //print(currentAgent);
+            //agents.Add(i, currentAgent);
+            //print(agents[i]);
+
+            /*
+            print(agent);
+            agentsGObj[i] = agent;
+            var attributes = new List<int>();
+            attributes.Add(100);
+            attributes.Add(0);
+            attributes.Add(0);
+            attributes.Add(agentStartX);
+            attributes.Add(agentStartY);
+            attributes.Add(agentStartX);
+            attributes.Add(agentStartY);
+            attributes.Add(53);
+            attributes.Add(82);
+            agentsAttributes[i] = attributes;
+            print(agentsAttributes[i]);
+            */
+
+            agentsGObj[i] = agent;
+            agentsAttributes[i, 0] = 100;
+            agentsAttributes[i, 1] = 0;
+            agentsAttributes[i, 2] = 0;
+            agentsAttributes[i, 3] = agentStartX;
+            agentsAttributes[i, 4] = agentStartY;
+            agentsAttributes[i, 5] = agentStartX;
+            agentsAttributes[i, 6] = agentStartY;
+            agentsAttributes[i, 7] = 53;
+            agentsAttributes[i, 8] = 82;
+
 
         }
         GridManager.Instance.findDistance = true;

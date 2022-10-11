@@ -92,5 +92,8 @@ MonoBehaviour:
   _highlight: {fileID: 4730876421967726067}
   _isWalkable: 1
   OccupiedUnit: {fileID: 0}
+  visited: -1
+  x: 0
+  y: 0
   _baseColor: {r: 0.43529412, g: 0.6901961, b: 0.37254903, a: 1}
-  _offsetColor: {r: 0.67295593, g: 0.8301887, b: 0.6226415, a: 1}
+  _offsetColor: {r: 0.6117647, g: 0.7647059, b: 0.57254905, a: 1}

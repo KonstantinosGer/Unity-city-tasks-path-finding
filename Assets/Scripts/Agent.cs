@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Agent : MonoBehaviour
+public class Agent
 {
     //public static Agent Instance;
 
@@ -18,6 +18,7 @@ public class Agent : MonoBehaviour
     //agents' plan
     public Dictionary<string, Vector2> plan;
 
+    
     public Agent(int id, int energyPoints, int numberOfCoins, int numberOfEnergyPots, int startX, int startY, int routeStartPointX, int routeStartPointY, int routeEndPointX, int routeEndPointY, GameObject assetPrefab)
     {
         this.id = id;
@@ -33,6 +34,7 @@ public class Agent : MonoBehaviour
 
         this.assetPrefab = assetPrefab;
     }
+    
 
     void Start()
     {

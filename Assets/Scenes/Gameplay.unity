@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48eed49d5241f414eae85fa93b3cf3fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAgents: 10
+  numberOfAgents: 4
   agent: {fileID: 1683322886944686, guid: 6a24460a842bf0c45961f10339b84555, type: 3}
   house: {fileID: 5973705207219932342, guid: e4aa6093104c719488da0e9b37f5bb53, type: 3}
   moveSpeed: 0
@@ -285,12 +285,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2a2b4a456d33d547a7912fe02c41c24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  count: 0
   _width: 100
   _height: 100
   scale: 1
   _grassTile: {fileID: -3417053288464324152, guid: 06d6aebba81e05d4b92c57934f820e81, type: 3}
   _mountainTile: {fileID: -6216368731758939767, guid: 4662d1be76ca2de47b04adde923eb888, type: 3}
+  bomb: {fileID: 5112933448500027216, guid: cacbe54e324372143927768fc8dd633b, type: 3}
   _cam: {fileID: 519420032}
   findDistance: 1
   path: []
@@ -436,6 +436,10 @@ MonoBehaviour:
   bank: {fileID: 6170832304563968273, guid: b8abbf276ed0b57458e6637a77f77e7c, type: 3}
   woodStore: {fileID: 858029468269153299, guid: 364733d75a7be6f42a2d70b83dc775b0, type: 3}
   toolStore: {fileID: 5128209221215061405, guid: 8970b9bab3f4f234a986c0977785bdc5, type: 3}
+  treeSet: {fileID: 5432809514963063651, guid: c5abb4730bc88864c8c19a6fa774484e, type: 3}
+  lake: {fileID: 8232008303898641692, guid: d26ebcb7ef459d2499bd647443ec25ff, type: 3}
+  park: {fileID: 7074092159968929948, guid: b67393c15d3a33d49bbd7f05dd8f87c4, type: 3}
+  cityBuilding1: {fileID: 5773226436330956467, guid: 096af27bcba32414c963dfa45a522161, type: 3}
   buildingsTiles: []
 --- !u!4 &1825115197
 Transform:
