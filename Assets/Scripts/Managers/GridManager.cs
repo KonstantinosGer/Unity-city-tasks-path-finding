@@ -16,8 +16,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] public int _width, _height;
     public int scale = 1;
 
-    [SerializeField] private Tile _grassTile, _mountainTile;
-    [SerializeField] public GameObject bomb;
+    [SerializeField] private Tile _grassTile, _forbiddenTile;
+    [SerializeField] public GameObject rock;
 
     [SerializeField] private Transform _cam;
 
@@ -44,7 +44,7 @@ public class GridManager : MonoBehaviour
     {
         //GenerateGrid();
         //Debug.Log(GetTileAtPosition(myVector));
-        agentsPaths = new Dictionary<int, List<Tile>>();
+        
     }
 
     private void Update()
@@ -52,7 +52,8 @@ public class GridManager : MonoBehaviour
 
         if (findDistance)
         {
-            
+            findDistance = false;
+            agentsPaths = new Dictionary<int, List<Tile>>();
             for (int i = 0; i < AgentMovement.Instance.numberOfAgents; i++)
             {
                 InitialSetUp(i);
@@ -65,55 +66,23 @@ public class GridManager : MonoBehaviour
 
                 path.Reverse();
                 agentsPaths[i] = path;
-                //agentsPaths.Add(i, path);
 
-                foreach (Tile tile in agentsPaths[i])
-                {
-                    print("Path of agent " + i + ": " + tile);
-                }
-            }
-
-
-            /*
-            // Call MovePlayer from AgentMovement script
-            //player.GetComponent<PlayerMovement>().MovePlayer(path);
-            for (int i = 1; i <= AgentMovement.Instance.numberOfAgents; i++)
-            {
-                Agent currentAgent = AgentMovement.Instance.agents[i];
-                foreach(Tile tile in agentsPaths[i])
-                {
-                    AgentMovement.Instance.MovePlayer(tile, currentAgent.assetPrefab);
-                }
-            }
-            */
-            
-
-            // Set findDistance to false so it doesn't keep doing this over and over again
-            findDistance = false;
-        }
-
-        /*
-        // Call MovePlayer from AgentMovement script
-        //player.GetComponent<PlayerMovement>().MovePlayer(path);
-        for (int i = 0; i < AgentMovement.Instance.numberOfAgents; i++)
-        {
-            // If list "path" (sortest path) has at least one item
-            if (agentsPaths[i].Count > 0)
-            {
-                //Agent currentAgent = AgentMovement.Instance.agents[i];
                 //foreach (Tile tile in agentsPaths[i])
                 //{
-                AgentMovement.Instance.MovePlayer(agentsPaths[i].ElementAt(0), AgentMovement.Instance.agentsGObj[i]);
+                //    print("Path of agent " + i + ": " + tile);
                 //}
-
-                //player.GetComponent<PlayerMovement>().MovePlayer(path[0]);
-                agentsPaths[i].RemoveAt(0);
             }
+
+            //for(int i = 0; i < 10; i++)
+            //{
+            //    AgentMovement.Instance.pathsExamined[i] = false;
+            //}
+            AgentMovement.Instance.moveAgents = true;
+
+            // Set findDistance to false so it doesn't keep doing this over and over again
+            
         }
-        */
     }
-
-
 
     public bool isBuildingEntrance(int x, int y)
     {
@@ -155,13 +124,13 @@ public class GridManager : MonoBehaviour
         {
             for (int j = 0; j < _height; j++)
             {
-                var randomTile = Random.Range(0, 12) == 3 && (!isBuildingEntrance(i,j) && !isBuildingArea(i,j))? _mountainTile : _grassTile;  // if random generator returns 3 then assign a mountainTile, else grasstile
+                var randomTile = Random.Range(0, 12) == 3 && (!isBuildingEntrance(i,j) && !isBuildingArea(i,j))? _forbiddenTile : _grassTile;  // if random generator returns 3 then assign a forbiddenTile, else grasstile
                 var spawnedTile = Instantiate(randomTile, new Vector3(i, j), Quaternion.identity);
 
-                if(randomTile == _mountainTile)
+                if(randomTile == _forbiddenTile)
                 {
-                    //Vector3 vector3 = new(_mountainTile.x, _mountainTile.y);
-                    Instantiate(bomb, new Vector3(i, j), Quaternion.identity);
+                    //Vector3 vector3 = new(_forbiddenTile.x, _forbiddenTile.y);
+                    Instantiate(rock, new Vector3(i, j), Quaternion.identity);
                 }
 
                 spawnedTile.transform.SetParent(gameObject.transform);
@@ -231,26 +200,54 @@ public class GridManager : MonoBehaviour
         switch (direction)
         {
             case 4:
-                myVector = new Vector2(x - 1, y);
-                if (x - 1 > -1 && _tiles[myVector] && _tiles[myVector].visited == step && _tiles[myVector]._isWalkable)
+                if(x-1 >= 0)
+                {
+                    myVector = new Vector2(x - 1, y);
+                }
+                else
+                {
+                    return false;
+                }
+                if (_tiles[myVector] && _tiles[myVector]._isWalkable && x - 1 > -1 && _tiles[myVector].visited == step)
                     return true;
                 else
                     return false;
             case 3:
-                myVector = new Vector2(x, y-1);
-                if (y - 1 > -1 && _tiles[myVector] && _tiles[myVector].visited == step && _tiles[myVector]._isWalkable)
+                if(y-1 >= 0)
+                {
+                    myVector = new Vector2(x, y - 1);
+                }
+                else
+                {
+                    return false;
+                }
+                if (_tiles[myVector] && _tiles[myVector]._isWalkable && y - 1 > -1 && _tiles[myVector].visited == step)
                     return true;
                 else
                     return false;
             case 2:
-                myVector = new Vector2(x+1, y);
-                if (x + 1 < _width && _tiles[myVector] && _tiles[myVector].visited == step && _tiles[myVector]._isWalkable)
+                if (x+1 <= 99)
+                {
+                    myVector = new Vector2(x + 1, y);
+                }
+                else
+                {
+                    return false;
+                }
+                if (_tiles[myVector] && _tiles[myVector]._isWalkable && x + 1 < _width && _tiles[myVector].visited == step)
                     return true;
                 else
                     return false;
             case 1:
-                myVector = new Vector2(x, y+1);
-                if (y + 1 < _height && _tiles[myVector] && _tiles[myVector].visited == step && _tiles[myVector]._isWalkable)
+                if (y + 1 <= 99)
+                {
+                    myVector = new Vector2(x, y + 1);
+                }
+                else
+                {
+                    return false;
+                }
+                if (_tiles[myVector] && _tiles[myVector]._isWalkable && y + 1 < _height && _tiles[myVector].visited == step)
                     return true;
                 else
                     return false;
