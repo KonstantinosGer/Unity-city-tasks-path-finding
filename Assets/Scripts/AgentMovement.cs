@@ -52,6 +52,9 @@ public class AgentMovement : MonoBehaviour
     public Dictionary<int, Dictionary<string, bool>> agentVisitedBuildings;
     public Dictionary<string, bool> isBuildingVisited;
 
+    public int i = -1;
+    public Dictionary<int, bool> executedThePlan;
+
 
     // Start is called before the first frame update
     void Awake()
@@ -67,6 +70,7 @@ public class AgentMovement : MonoBehaviour
         coordinates = new Dictionary<string, Vector2>();
         isBuildingVisited = new Dictionary<string, bool>();
         agentVisitedBuildings = new Dictionary<int, Dictionary<string, bool>>();
+        executedThePlan = new Dictionary<int, bool>();
     }
 
     public void generateHousesAndAgents()
@@ -81,11 +85,6 @@ public class AgentMovement : MonoBehaviour
                 //print("randomY:" + randomY);
                 houseX = randomX;
                 houseY = randomY;
-
-                //calculating the integer part of [randomX/2]
-                //double halfRandomX = randomX / 2;
-                //calculating the integer part of [randomY/2]
-                //double halfRandomY = randomY / 2;
 
                 //
                 //Bottom-Left Tile
@@ -119,21 +118,6 @@ public class AgentMovement : MonoBehaviour
                     Buildings.Instance.buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
                     //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
-
-                    /*
-                    if (GridManager.Instance.GetTileAtPosition(myVector)._isWalkable.Equals(false))
-                    {
-
-                        //change color
-                        //GridManager.Instance._tiles[myVector].forbiddenTileColor = GetComponent<Renderer>();
-                        //GridManager.Instance._tiles[myVector].forbiddenTileColor.material.color = new Color(1f, 0f, 1f, 1f);
-
-                    }
-                    else
-                    {
-                        GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
-                    }
-                    */
                 }
             }
             agentVector = new Vector2(agentStartX, agentStartY);
@@ -196,6 +180,8 @@ public class AgentMovement : MonoBehaviour
             isBuildingVisited["woodStore"] = false;
             isBuildingVisited["toolStore"] = false;
             agentVisitedBuildings[i] = isBuildingVisited;
+
+            executedThePlan[i] = false;
         }
         GridManager.Instance.findDistance = true;
     }
@@ -234,58 +220,72 @@ public class AgentMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (moveAgents)
+        if (moveAgents && !executedThePlan[i+1])
         {
-            moveAgents = false;
-            for (int i = 0; i < numberOfAgents; i++)
-            {
-                MovePlayer(GridManager.Instance.agentsPaths[i], agentsGObj[i]);
+            i++;
+            //moveAgents = false;
+            MovePlayer(GridManager.Instance.agentsPaths[i], agentsGObj[i]);
 
-                agentsAttributes[i, 5] = agentsAttributes[i, 7];
-                agentsAttributes[i, 6] = agentsAttributes[i, 8];
-                Vector2 currentPosition = new(agentsAttributes[i, 5], agentsAttributes[i, 6]);
-                if (currentPosition == BANK_COORDINATES)
+            agentsAttributes[i, 5] = agentsAttributes[i, 7];
+            agentsAttributes[i, 6] = agentsAttributes[i, 8];
+            Vector2 currentPosition = new(agentsAttributes[i, 5], agentsAttributes[i, 6]);
+            if (currentPosition == BANK_COORDINATES)
+            {
+                agentVisitedBuildings[i]["bank"] = true;
+                print("Agent " + i + " arrived at the bank!");
+                myVector = new Vector2(0, 0);
+                if (plan[i].TryGetValue("woodStore", out myVector))
                 {
-                    agentVisitedBuildings[i]["bank"] = true;
-                    print("Agent "+i+" arrived at the bank!");
-                    if (plan[i]["woodStore"] == new Vector2(0, 0))
-                    {
-                        plan[i]["woodStore"] = WOOD_STORE_COORDINATES;
-                        agentsAttributes[i, 7] = (int)WOOD_STORE_COORDINATES.x;
-                        agentsAttributes[i, 8] = (int)WOOD_STORE_COORDINATES.y;
-                    }
+                    plan[i]["woodStore"] = WOOD_STORE_COORDINATES;
+                    agentsAttributes[i, 7] = (int)WOOD_STORE_COORDINATES.x;
+                    agentsAttributes[i, 8] = (int)WOOD_STORE_COORDINATES.y;
                 }
-                else if(currentPosition == WOOD_STORE_COORDINATES)
+                else
                 {
-                    agentVisitedBuildings[i]["woodStore"] = true;
-                    print("Agent " + i + " arrived at the woodStore!");
-                    if (plan[i]["toolStore"] == new Vector2(0, 0))
-                    {
-                        plan[i]["toolStore"] = TOOL_STORE_COORDINATES;
-                        agentsAttributes[i, 7] = (int)TOOL_STORE_COORDINATES.x;
-                        agentsAttributes[i, 8] = (int)TOOL_STORE_COORDINATES.y;
-                    }
-                }
-                else if(currentPosition == TOOL_STORE_COORDINATES)
-                {
-                    agentVisitedBuildings[i]["toolStore"] = true;
-                    print("Agent " + i + " arrived at the toolStore!");
-                    if (agentVisitedBuildings[i]["bank"] && agentVisitedBuildings[i]["woodStore"])
-                    {
-                        agentsAttributes[i, 7] = agentsAttributes[i, 3];
-                        agentsAttributes[i, 8] = agentsAttributes[i, 4];
-                    }
-                }
-                else if(currentPosition == new Vector2(agentsAttributes[i, 3], agentsAttributes[i, 4]))
-                {
-                    print("Agent " + i + " executed his plan!");
+                    print("surprise motherfucker");
                 }
             }
-            GridManager.Instance.findDistance = true;
+            else if (currentPosition == WOOD_STORE_COORDINATES)
+            {
+                agentVisitedBuildings[i]["woodStore"] = true;
+                print("Agent " + i + " arrived at the woodStore!");
+                myVector = new Vector2(0, 0);
+                if (plan[i].TryGetValue("toolStore", out myVector))
+                {
+                    plan[i]["toolStore"] = TOOL_STORE_COORDINATES;
+                    agentsAttributes[i, 7] = (int)TOOL_STORE_COORDINATES.x;
+                    agentsAttributes[i, 8] = (int)TOOL_STORE_COORDINATES.y;
+                }
+            }
+            else if (currentPosition == TOOL_STORE_COORDINATES)
+            {
+                agentVisitedBuildings[i]["toolStore"] = true;
+                print("Agent " + i + " arrived at the toolStore!");
+                if (agentVisitedBuildings[i].GetValueOrDefault("bank",true) && agentVisitedBuildings[i].GetValueOrDefault("woodstore", true))
+                {
+                    agentsAttributes[i, 7] = agentsAttributes[i, 3];
+                    agentsAttributes[i, 8] = agentsAttributes[i, 4];
+                }
+            }
+            else if (currentPosition == new Vector2(agentsAttributes[i, 3], agentsAttributes[i, 4]))
+            {
+                print("Agent " + i + " executed his plan!");
+                executedThePlan[i] = true;
+            }
+            else
+            {
+                print("Agent " + i + " is in position: "+ currentPosition);
+            }
+
+            if (i == numberOfAgents - 1)
+            {
+                i = -1;
+                moveAgents = false;
+                GridManager.Instance.findDistance = true;
+            }
         }
     }
 
-    
     public void MovePlayer(List<Tile> path, GameObject myAgent)
     {
         // Foreach tile in list (list = shortest path)

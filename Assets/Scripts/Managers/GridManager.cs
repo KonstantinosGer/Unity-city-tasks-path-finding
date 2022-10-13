@@ -32,12 +32,14 @@ public class GridManager : MonoBehaviour
     public int endY = 5;
     Vector2 myVector;
 
+    public int i = -1;
+
 
     void Awake()
     {
         Instance = this;
         GenerateGrid();
-        
+        agentsPaths = new Dictionary<int, List<Tile>>();
     }
 
     void Start()
@@ -49,40 +51,35 @@ public class GridManager : MonoBehaviour
 
     private void Update()
     {
-
-        if (findDistance)
+        
+        if (findDistance && !AgentMovement.Instance.executedThePlan[i + 1])
         {
-            findDistance = false;
-            agentsPaths = new Dictionary<int, List<Tile>>();
-            for (int i = 0; i < AgentMovement.Instance.numberOfAgents; i++)
+            i++;
+            
+
+            InitialSetUp(i);
+
+            // Propagate all the numbers
+            SetDistance();
+            // Give us an array
+            SetPath(i);
+
+
+            path.Reverse();
+            agentsPaths[i] = path;
+
+
+            if(i == AgentMovement.Instance.numberOfAgents -1)
             {
-                InitialSetUp(i);
-
-                // Propagate all the numbers
-                SetDistance();
-                // Give us an array
-                SetPath(i);
-
-
-                path.Reverse();
-                agentsPaths[i] = path;
-
-                //foreach (Tile tile in agentsPaths[i])
-                //{
-                //    print("Path of agent " + i + ": " + tile);
-                //}
+                i = -1;
+                AgentMovement.Instance.moveAgents = true;
+                // Set findDistance to false so it doesn't keep doing this over and over again
+                findDistance = false;
             }
 
-            //for(int i = 0; i < 10; i++)
-            //{
-            //    AgentMovement.Instance.pathsExamined[i] = false;
-            //}
-            AgentMovement.Instance.moveAgents = true;
-
-            // Set findDistance to false so it doesn't keep doing this over and over again
-            
         }
     }
+
 
     public bool isBuildingEntrance(int x, int y)
     {
@@ -320,6 +317,8 @@ public class GridManager : MonoBehaviour
             // if there isn't something equal to -1
             // It means we can't get to final destination (endX, endY)
             print("Can't reach the desired location");
+            print("My vector: "+myVector);
+            print("_tiles[myVector].visited = "+_tiles[myVector].visited);
             return;
         }
 

@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48eed49d5241f414eae85fa93b3cf3fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfAgents: 2
+  numberOfAgents: 3
   agent: {fileID: 1683322886944686, guid: 6a24460a842bf0c45961f10339b84555, type: 3}
   house: {fileID: 5973705207219932342, guid: e4aa6093104c719488da0e9b37f5bb53, type: 3}
   target: {x: 0, y: 0, z: 0}
@@ -186,6 +186,7 @@ MonoBehaviour:
   BANK_COORDINATES: {x: 53, y: 82}
   WOOD_STORE_COORDINATES: {x: 19, y: 52}
   TOOL_STORE_COORDINATES: {x: 83, y: 28}
+  i: -1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -312,6 +313,7 @@ MonoBehaviour:
   startY: 0
   endX: 5
   endY: 5
+  i: -1
 --- !u!4 &626480514
 Transform:
   m_ObjectHideFlags: 0
