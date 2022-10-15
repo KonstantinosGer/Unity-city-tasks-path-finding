@@ -15,6 +15,7 @@ public class Agent:MonoBehaviour
     public int routeStartPointX,routeStartPointY;
     public int routeEndPointX,routeEndPointY;
     public GameObject assetPrefab;
+    public bool hasDied;
 
     //agents' plan
     public Dictionary<string, Vector2> plan;

@@ -153,7 +153,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &240496393
 MonoBehaviour:
@@ -172,21 +172,13 @@ MonoBehaviour:
   house: {fileID: 5973705207219932342, guid: e4aa6093104c719488da0e9b37f5bb53, type: 3}
   target: {x: 0, y: 0, z: 0}
   moveAgents: 0
-  agentsGObj:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   BANK_COORDINATES: {x: 53, y: 82}
   WOOD_STORE_COORDINATES: {x: 19, y: 52}
   TOOL_STORE_COORDINATES: {x: 83, y: 28}
   i: -1
+  numberOfAgentsFinished: 0
+  previousRandomBuilding: -1
+  trips: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,15 +297,11 @@ MonoBehaviour:
   scale: 1
   _grassTile: {fileID: -3417053288464324152, guid: 06d6aebba81e05d4b92c57934f820e81, type: 3}
   _forbiddenTile: {fileID: -6216368731758939767, guid: 4662d1be76ca2de47b04adde923eb888, type: 3}
-  rock: {fileID: 8749140702521536773, guid: e819dfe1bc2aeaf4f9602833eb9ccbf8, type: 3}
+  rock: {fileID: 5283915510703003434, guid: fed3f3988fd90984380472e02dd15f16, type: 3}
   _cam: {fileID: 519420032}
   findDistance: 1
   path: []
-  startX: 0
-  startY: 0
-  endX: 5
-  endY: 5
-  i: -1
+  index: 0
 --- !u!4 &626480514
 Transform:
   m_ObjectHideFlags: 0
@@ -360,6 +348,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GoldCount: 0
   EnergyPotCount: 0
+  goldTiles: []
+  energyPotTiles: []
 --- !u!4 &826126634
 Transform:
   m_ObjectHideFlags: 0
@@ -367,51 +357,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 826126632}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 53.78805, y: 48.57758, z: -0.841301}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1061931898
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1061931900}
-  - component: {fileID: 1061931899}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1061931899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061931898}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 548b7acf67bc32c46af6c90e790398af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GameState: 0
---- !u!4 &1061931900
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1061931898}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 53.78805, y: 48.57758, z: -0.841301}
   m_LocalScale: {x: 1, y: 1, z: 1}

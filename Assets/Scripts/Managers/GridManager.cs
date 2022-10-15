@@ -49,17 +49,19 @@ public class GridManager : MonoBehaviour
         {
             if (!AgentMovement.Instance.agents[index].executedThePlan)
             {
-                InitialSetUp(index);
+                if (!AgentMovement.Instance.agents[index].hasDied)
+                {
+                    InitialSetUp(index);
 
-                // Propagate all the numbers
-                SetDistance();
-                // Give us an array
-                SetPath(index);
+                    // Propagate all the numbers
+                    SetDistance();
+                    // Give us an array
+                    SetPath(index);
 
 
-                path.Reverse();
-                agentsPaths[index] = path;
-
+                    path.Reverse();
+                    agentsPaths[index] = path;
+                }
 
                 if (index == AgentMovement.Instance.numberOfAgents - 1)
                 {
@@ -358,12 +360,13 @@ public class GridManager : MonoBehaviour
             // And then puts the shortest one in the path
             myVector = new Vector2(x, y);
             Tile tempTile = FindClosest(_tiles[myVector].transform, tempList);
+            //print(tempTile);
             path.Add(tempTile);
             x = tempTile.x;
             y = tempTile.y;
             tempList.Clear();
         }
-
+        
     }
 
     void SetVisited(int x, int y, int step)

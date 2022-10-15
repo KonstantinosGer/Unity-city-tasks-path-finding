@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Xml.Linq;
 using Unity.Burst.CompilerServices;
 using Unity.Mathematics;
@@ -50,6 +51,10 @@ public class AgentMovement : MonoBehaviour
 
     public bool[,] savedDataArray = new bool[10,3];
 
+    //x -> agentID, y -> trip
+    public int[,] steps = new int[10, 4];
+    public int[] trips = new int[10];
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -66,6 +71,15 @@ public class AgentMovement : MonoBehaviour
         i = 0;
         numberOfAgentsFinished = 0;
         previousRandomBuilding = -1;
+
+        for(int k = 0; k < 10; k++)
+        {
+            trips[k] = 0;
+            for(int j = 0; j < 4; j++)
+            {
+                steps[k,j] = 0;
+            }
+        }
     }
 
     public void generateHousesAndAgents()
@@ -190,7 +204,8 @@ public class AgentMovement : MonoBehaviour
                 assetPrefab = agent,
                 plan = coordinates,
                 executedThePlan = false,
-                agentVisitedBuildings = isBuildingVisited
+                agentVisitedBuildings = isBuildingVisited,
+                hasDied = false
             };
 
             agents[i] = currentAgent;
@@ -242,114 +257,135 @@ public class AgentMovement : MonoBehaviour
             //
             // Move player to target position
             //
-            MovePlayer(GridManager.Instance.agentsPaths[i], agents[i].assetPrefab);
+            bool agentMadeItToDestination = MovePlayer(GridManager.Instance.agentsPaths[i], agents[i].assetPrefab, agents[i] , trips[i]);
+            
 
-            //
-            // Updating agents' plan
-            // Assigning new destination for each agent 
-            //
-            agents[i].routeStartPointX = agents[i].routeEndPointX;
-            agents[i].routeStartPointY = agents[i].routeEndPointY;
-            Vector2 currentPosition = new(agents[i].routeStartPointX, agents[i].routeStartPointY);
-            if (currentPosition == BANK_COORDINATES)
+            if (agentMadeItToDestination)
             {
-                // Keeping previous visited booleans for each agent
-                agents[i].agentVisitedBuildings["bank"] = true;
-                agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i,1];
-                agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i,2];
-                savedDataArray[i, 0] = true;
+                trips[i]++;
 
-                print("Agent " + i + " arrived at the bank!");
-                if (agents[i].agentVisitedBuildings["woodStore"] == false)
+                //
+                // Updating agents' plan
+                // Assigning new destination for each agent 
+                //
+                agents[i].routeStartPointX = agents[i].routeEndPointX;
+                agents[i].routeStartPointY = agents[i].routeEndPointY;
+                Vector2 currentPosition = new(agents[i].routeStartPointX, agents[i].routeStartPointY);
+                if (currentPosition == BANK_COORDINATES)
                 {
-                    agents[i].plan["woodStore"] = WOOD_STORE_COORDINATES;
-                    agents[i].routeEndPointX = (int)WOOD_STORE_COORDINATES.x;
-                    agents[i].routeEndPointY = (int)WOOD_STORE_COORDINATES.y;
+                    // Keeping previous visited booleans for each agent
+                    agents[i].agentVisitedBuildings["bank"] = true;
+                    agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i, 1];
+                    agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i, 2];
+                    savedDataArray[i, 0] = true;
+
+                    print("Agent " + i + " arrived at the bank!");
+                    if (agents[i].agentVisitedBuildings["woodStore"] == false)
+                    {
+                        agents[i].plan["woodStore"] = WOOD_STORE_COORDINATES;
+                        agents[i].routeEndPointX = (int)WOOD_STORE_COORDINATES.x;
+                        agents[i].routeEndPointY = (int)WOOD_STORE_COORDINATES.y;
+                    }
+                    else if (agents[i].agentVisitedBuildings["toolStore"] == false)
+                    {
+                        agents[i].plan["toolStore"] = TOOL_STORE_COORDINATES;
+                        agents[i].routeEndPointX = (int)TOOL_STORE_COORDINATES.x;
+                        agents[i].routeEndPointY = (int)TOOL_STORE_COORDINATES.y;
+                    }
+                    else
+                    {
+                        agents[i].routeEndPointX = agents[i].startX;
+                        agents[i].routeEndPointY = agents[i].startY;
+                    }
                 }
-                else if (agents[i].agentVisitedBuildings["toolStore"] == false)
+                else if (currentPosition == WOOD_STORE_COORDINATES)
                 {
-                    agents[i].plan["toolStore"] = TOOL_STORE_COORDINATES;
-                    agents[i].routeEndPointX = (int)TOOL_STORE_COORDINATES.x;
-                    agents[i].routeEndPointY = (int)TOOL_STORE_COORDINATES.y;
+                    // Keeping previous visited booleans for each agent
+                    agents[i].agentVisitedBuildings["woodStore"] = true;
+                    agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
+                    agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i, 2];
+                    savedDataArray[i, 1] = true;
+
+                    print("Agent " + i + " arrived at the woodStore!");
+                    if (agents[i].agentVisitedBuildings["bank"] == false)
+                    {
+                        agents[i].plan["bank"] = BANK_COORDINATES;
+                        agents[i].routeEndPointX = (int)BANK_COORDINATES.x;
+                        agents[i].routeEndPointY = (int)BANK_COORDINATES.y;
+                    }
+                    else if (agents[i].agentVisitedBuildings["toolStore"] == false)
+                    {
+                        agents[i].plan["toolStore"] = TOOL_STORE_COORDINATES;
+                        agents[i].routeEndPointX = (int)TOOL_STORE_COORDINATES.x;
+                        agents[i].routeEndPointY = (int)TOOL_STORE_COORDINATES.y;
+                    }
+                    else
+                    {
+                        agents[i].routeEndPointX = agents[i].startX;
+                        agents[i].routeEndPointY = agents[i].startY;
+                    }
+                }
+                else if (currentPosition == TOOL_STORE_COORDINATES)
+                {
+                    // Keeping previous visited booleans for each agent
+                    agents[i].agentVisitedBuildings["toolStore"] = true;
+                    agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i, 1];
+                    agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
+                    savedDataArray[i, 2] = true;
+
+                    print("Agent " + i + " arrived at the toolStore!");
+                    if (agents[i].agentVisitedBuildings["bank"] == false)
+                    {
+                        agents[i].plan["bank"] = BANK_COORDINATES;
+                        agents[i].routeEndPointX = (int)BANK_COORDINATES.x;
+                        agents[i].routeEndPointY = (int)BANK_COORDINATES.y;
+                    }
+                    else if (agents[i].agentVisitedBuildings["woodStore"] == false)
+                    {
+                        agents[i].plan["woodStore"] = WOOD_STORE_COORDINATES;
+                        agents[i].routeEndPointX = (int)WOOD_STORE_COORDINATES.x;
+                        agents[i].routeEndPointY = (int)WOOD_STORE_COORDINATES.y;
+                    }
+                    else
+                    {
+                        agents[i].routeEndPointX = agents[i].startX;
+                        agents[i].routeEndPointY = agents[i].startY;
+                    }
+                }
+                else if (currentPosition == new Vector2(agents[i].startX, agents[i].startY))
+                {
+                    // Keeping previous visited booleans for each agent
+                    agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
+                    agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i, 1];
+                    agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i, 2];
+
+                    if (agents[i].agentVisitedBuildings["bank"] == true && agents[i].agentVisitedBuildings["woodStore"] == true && agents[i].agentVisitedBuildings["toolStore"] == true)
+                    {
+                        print("Agent " + i + " returned home. Plan executed!");
+                        agents[i].executedThePlan = true;
+                        numberOfAgentsFinished++;
+                    }
                 }
                 else
                 {
-                    agents[i].routeEndPointX = agents[i].startX;
-                    agents[i].routeEndPointY = agents[i].startY;
+                    print("Agent " + i + " is in position: " + currentPosition);
                 }
-            }
-            else if (currentPosition == WOOD_STORE_COORDINATES)
-            {
-                // Keeping previous visited booleans for each agent
-                agents[i].agentVisitedBuildings["woodStore"] = true;
-                agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
-                agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i, 2];
-                savedDataArray[i, 1] = true;
 
-                print("Agent " + i + " arrived at the woodStore!");
-                if (agents[i].agentVisitedBuildings["bank"] == false)
-                {
-                    agents[i].plan["bank"] = BANK_COORDINATES;
-                    agents[i].routeEndPointX = (int)BANK_COORDINATES.x;
-                    agents[i].routeEndPointY = (int)BANK_COORDINATES.y;
-                }
-                else if (agents[i].agentVisitedBuildings["toolStore"] == false)
-                {
-                    agents[i].plan["toolStore"] = TOOL_STORE_COORDINATES;
-                    agents[i].routeEndPointX = (int)TOOL_STORE_COORDINATES.x;
-                    agents[i].routeEndPointY = (int)TOOL_STORE_COORDINATES.y;
-                }
-                else
-                {
-                    agents[i].routeEndPointX = agents[i].startX;
-                    agents[i].routeEndPointY = agents[i].startY;
-                }
-            }
-            else if (currentPosition == TOOL_STORE_COORDINATES)
-            {
-                // Keeping previous visited booleans for each agent
-                agents[i].agentVisitedBuildings["toolStore"] = true;
-                agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i, 1];
-                agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
-                savedDataArray[i, 2] = true;
 
-                print("Agent " + i + " arrived at the toolStore!");
-                if (agents[i].agentVisitedBuildings["bank"] == false)
+                //
+                // When all agents have completed all of their tasks
+                //
+                if (numberOfAgentsFinished == numberOfAgents)
                 {
-                    agents[i].plan["bank"] = BANK_COORDINATES;
-                    agents[i].routeEndPointX = (int)BANK_COORDINATES.x;
-                    agents[i].routeEndPointY = (int)BANK_COORDINATES.y;
-                }
-                else if (agents[i].agentVisitedBuildings["woodStore"] == false)
-                {
-                    agents[i].plan["woodStore"] = WOOD_STORE_COORDINATES;
-                    agents[i].routeEndPointX = (int)WOOD_STORE_COORDINATES.x;
-                    agents[i].routeEndPointY = (int)WOOD_STORE_COORDINATES.y;
-                }
-                else
-                {
-                    agents[i].routeEndPointX = agents[i].startX;
-                    agents[i].routeEndPointY = agents[i].startY;
+                    for (int j = 0; j < numberOfAgents; j++)
+                    {
+                        target = new Vector2(agents[j].startX, agents[j].startY);
+                        agents[j].assetPrefab.transform.position = target;
+                    }
+                    print("All agents completed their tasks");
                 }
             }
-            else if (currentPosition == new Vector2(agents[i].startX, agents[i].startY))
-            {
-                // Keeping previous visited booleans for each agent
-                agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
-                agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i, 1];
-                agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i, 2];
 
-                if (agents[i].agentVisitedBuildings["bank"] == true && agents[i].agentVisitedBuildings["woodStore"] == true && agents[i].agentVisitedBuildings["toolStore"] == true)
-                {
-                    print("Agent " + i + " returned home. Plan executed!");
-                    agents[i].executedThePlan = true;
-                    numberOfAgentsFinished++;
-                }
-            }
-            else
-            {
-                print("Agent " + i + " is in position: "+ currentPosition);
-            }
 
             //
             // Calling pathfinding when each agents has finished his trip
@@ -364,35 +400,73 @@ public class AgentMovement : MonoBehaviour
             {
                 i++;
             }
-            
-
-            //
-            // When all agents have completed all of their tasks
-            //
-            if (numberOfAgentsFinished == numberOfAgents)
-            {
-                for (int j = 0; j < numberOfAgents; j++)
-                {
-                    target = new Vector2(agents[j].startX, agents[j].startY);
-                    agents[j].assetPrefab.transform.position = target;
-                }
-                print("All agents completed their tasks");
-            }
-            
         }
     }
 
     //
     // Moving agent on shortest path
     //
-    public void MovePlayer(List<Tile> path, GameObject myAgent)
+    public bool MovePlayer(List<Tile> path, GameObject myAgent, Agent agent, int trip)
     {
         // Foreach tile in list (list = shortest path)
         foreach (Tile tile in path)
         {
-            target = new Vector3(tile.x, tile.y + constant, 0);
-            while (myAgent.transform.position != target)
-                myAgent.transform.position = target;
+            if (!agent.hasDied)
+            {
+                target = new Vector3(tile.x, tile.y + constant, 0);
+                
+                while (myAgent.transform.position != target)
+                {
+                    myAgent.transform.position = target;
+                    agent.energyPoints--;
+                    steps[agent.id, trip]++;
+                }
+
+                // Found tile with gold or energy pot
+                if (tile.OccupiedUnit != null)
+                {
+                    float tempX = target.x;
+                    float tempY = target.y - constant;
+                    Vector2 temp = new(tempX, tempY);
+                    // Found energy pot
+                    if (UnitManager.Instance.energyPotTiles.Contains(tile))
+                    {
+                        print("I am in coordinates: " + temp + ".I found an energy pot.");
+                        agent.numberOfEnergyPots++;
+                    }
+                    // Found gold coin
+                    else if (UnitManager.Instance.goldTiles.Contains(tile))
+                    {
+                        print("I am in coordinates: " + temp + ".I found a gold coin.");
+                        agent.numberOfCoins++;
+                    }
+                }
+
+                if (agent.energyPoints <= 25 && agent.energyPoints > 0)
+                {
+                    if (agent.numberOfEnergyPots >= 1)
+                    {
+                        agent.numberOfEnergyPots--;
+                        agent.energyPoints += 20;
+                        print("Agent's " + agent.id + " health was " + (agent.energyPoints - 20) + ". He consumed one energy pot and now his health is " + agent.energyPoints + ".");
+                    }
+                    else
+                    {
+                        print("Agent's " + agent.id + " health is deteriorating dramatically.");
+                    }
+                }
+                else if (agent.energyPoints == 0)
+                {
+                    print("Agent's " + agent.id + " has died at "+ myAgent.transform.position+".");
+                    agent.hasDied = true;
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
+        return true;
     }
 }

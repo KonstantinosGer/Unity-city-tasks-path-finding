@@ -11,6 +11,9 @@ public class UnitManager : MonoBehaviour
 
     [SerializeField] private int GoldCount, EnergyPotCount;
 
+    public List<Tile> goldTiles = new();
+    public List<Tile> energyPotTiles = new();
+
 
     void Awake()
     {
@@ -30,7 +33,7 @@ public class UnitManager : MonoBehaviour
     //
     public void SpawnGold()
     {
-        GoldCount = 100;
+        GoldCount = 200;
 
         for (int i = 0; i <= GoldCount; i++)
         {
@@ -38,13 +41,18 @@ public class UnitManager : MonoBehaviour
             var spawnedGold = Instantiate(randomPrefab);
             var randomSpawnTile = GridManager.Instance.GetSpawnTile();
 
+            
             if (Buildings.Instance.buildingsTiles.Contains(randomSpawnTile))
             {
                 randomSpawnTile.OccupiedUnit = spawnedGold;
                 spawnedGold.OccupiedTile = randomSpawnTile;
             }
+            
+
             //see Tile script 
             randomSpawnTile.SetUnit(spawnedGold);
+
+            goldTiles.Add(randomSpawnTile);
         }
     }
 
@@ -53,7 +61,7 @@ public class UnitManager : MonoBehaviour
     //
     public void SpawnEnergyPot()
     {
-        EnergyPotCount = 100;
+        EnergyPotCount = 250;
 
         for (int i = 0; i <= EnergyPotCount; i++)
         {
@@ -61,20 +69,25 @@ public class UnitManager : MonoBehaviour
             var spawnedEnergyPot = Instantiate(randomPrefab);
             var randomSpawnTile = GridManager.Instance.GetSpawnTile();
 
+            
             if (Buildings.Instance.buildingsTiles.Contains(randomSpawnTile))
             {
                 randomSpawnTile.OccupiedUnit = spawnedEnergyPot;
                 spawnedEnergyPot.OccupiedTile = randomSpawnTile;
             }
+            
+
             //see Tile script 
             randomSpawnTile.SetUnit(spawnedEnergyPot);
+
+            energyPotTiles.Add(randomSpawnTile);
         }
     }
 
     //
     // Generic function for returning a random prefab (gold or energy pot)
     //
-    private T GetRandomUnit<T>(Faction faction) where T : BaseUnit
+    public T GetRandomUnit<T>(Faction faction) where T : BaseUnit
     {
         return (T)_units.Where(u => u.Faction == faction).OrderBy(o => Random.value).First().UnitPrefab;
     }
