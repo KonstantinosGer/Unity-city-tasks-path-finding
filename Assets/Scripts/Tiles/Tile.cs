@@ -7,8 +7,6 @@ public abstract class Tile : MonoBehaviour
     [SerializeField] protected SpriteRenderer _renderer;
     [SerializeField] private GameObject _highlight;
     [SerializeField] public bool _isWalkable;
-    //public Renderer forbiddenTileColor;
-
 
     public BaseUnit OccupiedUnit;
     public bool Walkable => _isWalkable && OccupiedUnit == null;

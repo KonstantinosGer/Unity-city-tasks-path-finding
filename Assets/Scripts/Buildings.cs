@@ -63,331 +63,241 @@ public class Buildings : MonoBehaviour
                 //tiles for bank building
                 if (i >= 43 && i <= 57 && j >= 83 && j <= 97)
                 {
-                    //GridManager.Instance.count++;
-                    //print("bank. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for woodstore building
                 if (i >= 8 && i <= 18 && j >= 52 && j <= 62)
                 {
-                    //GridManager.Instance.count++;
-                    //print("woodstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for toolstore building
                 if (i >= 84 && i <= 94 && j >= 28 && j <= 38)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-1
                 if (i >= 16 && i <= 24 && j >= 76 && j <= 84)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-2
                 if (i >= 6 && i <= 14 && j >= 81 && j <= 89)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-3
                 if (i >= 1 && i <= 9 && j >= 71 && j <= 79)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-4
                 if (i >= 8 && i <= 16 && j >= 67 && j <= 75)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-5
                 if (i >= 23 && i <= 31 && j >= 83 && j <= 91)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-6
                 if (i >= 8 && i <= 16 && j >= 88 && j <= 96)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for lake
                 if (i >= 0 && i <= 30 && j >= 23 && j <= 47)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for nonImportant Building-1
                 if (i >= 75 && i <= 85 && j >= 75 && j <= 85)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for nonImportant Building-2
                 if (i >= 5 && i <= 15 && j >= 5 && j <= 15)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-1
                 if (i >= 76 && i <= 84 && j >= 49 && j <= 57)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-2
                 if (i >= 71 && i <= 79 && j >= 41 && j <= 49)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-3
                 if (i >= 84 && i <= 92 && j >= 53 && j <= 61)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-4
                 if (i >= 89 && i <= 97 && j >= 59 && j <= 67)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-5
                 if (i >= 61 && i <= 69 && j >= 86 && j <= 94)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-6
                 if (i >= 66 && i <= 74 && j >= 81 && j <= 89)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-7
                 if (i >= 59 && i <= 67 && j >= 61 && j <= 69)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-8
                 if (i >= 26 && i <= 34 && j >= 6 && j <= 14)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-9
                 if (i >= 36 && i <= 44 && j >= 1 && j <= 9)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-10
                 if (i >= 46 && i <= 54 && j >= 3 && j <= 11)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-11
                 if (i >= 61 && i <= 69 && j >= 6 && j <= 14)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-12
                 if (i >= 76 && i <= 84 && j >= 11 && j <= 19)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-13
                 if (i >= 56 && i <= 64 && j >= 16 && j <= 24)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-14
                 if (i >= 86 && i <= 94 && j >= 1 && j <= 9)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-15
                 if (i >= 26 && i <= 34 && j >= 41 && j <= 49)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-16
                 if (i >= 66 && i <= 74 && j >= 26 && j <= 34)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeSet-17
                 if (i >= 26 && i <= 34 && j >= 61 && j <= 69)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
                 //tiles for treeLine
                 if (i >= 41 && i <= 55 && j >= 28 && j <= 42)
                 {
-                    //GridManager.Instance.count++;
-                    //print("toolstore. Count: " + GridManager.Instance.count);
                     myVector = new Vector2(i, j);
                     buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
 
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
 

@@ -15,11 +15,9 @@ public class AgentMovement : MonoBehaviour
     [SerializeField] public int numberOfAgents;
     [SerializeField] public GameObject agent;
     [SerializeField] public GameObject house;
-    private float moveSpeed = 3;
 
-    //public List<Tile> housesList = new();
     public Vector3 target;
-    private float constant = 0.35f;
+    private float constant;
     Vector2 myVector;
     Vector2 agentVector;
     int bottomLeftX;
@@ -31,46 +29,43 @@ public class AgentMovement : MonoBehaviour
     int houseX;
     int houseY;
     public bool moveAgents = false;
-    //public bool[] pathsExamined = new bool[10];
-    //public int count= 0;
 
-    //public Dictionary<int, Agent> agents;
-
-    //public Dictionary<int, List<int>> agentsAttributes;
-    //public Dictionary<int, GameObject> agentsGObj;
-
-    public GameObject[] agentsGObj = new GameObject[10];
-    public int[,] agentsAttributes = new int[10, 9];
-
-    public Dictionary<int, Dictionary<string, Vector2>> plan;
     public Dictionary<string, Vector2> coordinates;
 
-    public Vector2 BANK_COORDINATES = new(53, 82);
-    public Vector2 WOOD_STORE_COORDINATES = new(19, 52);
-    public Vector2 TOOL_STORE_COORDINATES = new(83, 28);
+    public Vector2 BANK_COORDINATES; 
+    public Vector2 WOOD_STORE_COORDINATES; 
+    public Vector2 TOOL_STORE_COORDINATES; 
 
-    public Dictionary<int, Dictionary<string, bool>> agentVisitedBuildings;
     public Dictionary<string, bool> isBuildingVisited;
 
-    public int i = -1;
-    public Dictionary<int, bool> executedThePlan;
+    public int i;
 
+    Agent currentAgent = new Agent();
+
+    public Dictionary<int, Agent> agents;
+
+    public int numberOfAgentsFinished;
+
+    public int previousRandomBuilding;
+
+    public bool[,] savedDataArray = new bool[10,3];
 
     // Start is called before the first frame update
     void Awake()
     {
         Instance = this;
 
-        //for (int i = 0; i < 10; i++)
-        //{
-        //    pathsExamined[i] = false;
-        //}
-
-        plan = new Dictionary<int, Dictionary<string, Vector2>>();
         coordinates = new Dictionary<string, Vector2>();
         isBuildingVisited = new Dictionary<string, bool>();
-        agentVisitedBuildings = new Dictionary<int, Dictionary<string, bool>>();
-        executedThePlan = new Dictionary<int, bool>();
+        agents = new Dictionary<int, Agent>();
+
+        BANK_COORDINATES = new(53, 82);
+        WOOD_STORE_COORDINATES = new(19, 52);
+        TOOL_STORE_COORDINATES = new(83, 28);
+        constant = 0.35f;
+        i = 0;
+        numberOfAgentsFinished = 0;
+        previousRandomBuilding = -1;
     }
 
     public void generateHousesAndAgents()
@@ -80,9 +75,8 @@ public class AgentMovement : MonoBehaviour
             do
             {
                 int randomX = Random.Range(2, 97);
-                //print("randomX:" + randomX);
                 int randomY = Random.Range(2, 98);
-                //print("randomY:" + randomY);
+
                 houseX = randomX;
                 houseY = randomY;
 
@@ -104,84 +98,107 @@ public class AgentMovement : MonoBehaviour
 
             } while (isHouseInsideAnotherBuilding(bottomLeftX, bottomLeftY, topRightX, topRightY) || isAgentStartPositionInvalid(agentStartX, agentStartY));
 
-
+            //
+            // Instantiate prefabs
+            //
             agent = Instantiate(agent, new Vector3(agentStartX, (float)(agentStartY + constant)), Quaternion.identity);
             Instantiate(house, new Vector3(houseX, houseY, 0), Quaternion.identity);
 
+
+            //
+            // Setting tiles inside buildings as non walkable
+            //
             for (int x = bottomLeftX; x <= topRightX; x++)
             {
                 for (int y = bottomLeftY; y <= topRightY; y++)
                 {
-                    //GridManager.Instance.count++;
-                    //print("House. Count: " + GridManager.Instance.count +", X: "+x+", Y: "+y);
                     myVector = new Vector2(x, y);
                     Buildings.Instance.buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(myVector));
-                    //GridManager.Instance.GetTileAtPosition(myVector).visited = 0;
                     GridManager.Instance.GetTileAtPosition(myVector)._isWalkable = false;
                 }
             }
             agentVector = new Vector2(agentStartX, agentStartY);
             Buildings.Instance.buildingsTiles.Add(GridManager.Instance.GetTileAtPosition(agentVector));
 
-            // TODO -> print agent for debugging
-            //Agent currentAgent = new(i, 100, 0, 0, agentStartX, agentStartY, agentStartX, agentStartY, 53, 82, agent);
-            //Agent currentAgent = gameObject.AddComponent<Agent>();
-            //currentAgent.id = i;j
-            //currentAgent.energyPoints = 100;
-            //currentAgent.numberOfCoins = 0;
-            //currentAgent.numberOfEnergyPots = 0;
-            //currentAgent.startX = agentStartX;
-            //currentAgent.startY = agentStartY;
-            //currentAgent.routeStartPointX = agentStartX;
-            //currentAgent.routeStartPointY = agentStartY;
-            //currentAgent.routeEndPointX = 53;
-            //currentAgent.routeEndPointY = 82;
-            //currentAgent.assetPrefab = agent;
-            //print(currentAgent);
-            //agents.Add(i, currentAgent);
-            //print(agents[i]);
 
-            /*
-            print(agent);
-            agentsGObj[i] = agent;
-            var attributes = new List<int>();
-            attributes.Add(100);
-            attributes.Add(0);
-            attributes.Add(0);
-            attributes.Add(agentStartX);
-            attributes.Add(agentStartY);
-            attributes.Add(agentStartX);
-            attributes.Add(agentStartY);
-            attributes.Add(53);
-            attributes.Add(82);
-            agentsAttributes[i] = attributes;
-            print(agentsAttributes[i]);
-            */
-
-            agentsGObj[i] = agent;
-            agentsAttributes[i, 0] = 100;
-            agentsAttributes[i, 1] = 0;
-            agentsAttributes[i, 2] = 0;
-            agentsAttributes[i, 3] = agentStartX;
-            agentsAttributes[i, 4] = agentStartY;
-            agentsAttributes[i, 5] = agentStartX;
-            agentsAttributes[i, 6] = agentStartY;
-            agentsAttributes[i, 7] = 53;
-            agentsAttributes[i, 8] = 82;
-
+            //
+            // Choosing a random bulding for each agent to start his plan
+            // Bank = 0, Woodstore = 1, Toolstore = 2
+            //
+            int destinationX;
+            int destinationY;
+            int randomBuilding;
+            do
+            {
+                randomBuilding = Random.Range(0, 2);
+            } while (randomBuilding == previousRandomBuilding);
+            previousRandomBuilding = randomBuilding;
+             
             coordinates["home"] = new Vector2(agentStartX, agentStartY);
-            coordinates["bank"] = new Vector2(53, 82);
-            coordinates["woodStore"] = new Vector2(0, 0);
-            coordinates["toolStore"] = new Vector2(0, 0);
-            plan[i] = coordinates;
 
+            if (randomBuilding == 0)
+            {
+                coordinates["bank"] = new Vector2(53, 82);
+                coordinates["woodStore"] = new Vector2(0, 0);
+                coordinates["toolStore"] = new Vector2(0, 0);
+
+                destinationX = 53;
+                destinationY = 82;
+            }
+            else if (randomBuilding == 1)
+            {
+                coordinates["bank"] = new Vector2(0, 0);
+                coordinates["woodStore"] = new Vector2(19, 52);
+                coordinates["toolStore"] = new Vector2(0, 0);
+
+                destinationX = 19;
+                destinationY = 52;
+            }
+            else
+            {
+                coordinates["bank"] = new Vector2(0, 0);
+                coordinates["woodStore"] = new Vector2(0, 0);
+                coordinates["toolStore"] = new Vector2(83, 28);
+
+                destinationX = 83;
+                destinationY = 28;
+            }
+
+            //
+            // Initializing agent's attributes
+            //
             isBuildingVisited["home"] = true;
             isBuildingVisited["bank"] = false;
             isBuildingVisited["woodStore"] = false;
             isBuildingVisited["toolStore"] = false;
-            agentVisitedBuildings[i] = isBuildingVisited;
 
-            executedThePlan[i] = false;
+            //
+            // Creating a new Agent object
+            //
+            currentAgent = new()
+            {
+                id = i,
+                energyPoints = 100,
+                numberOfCoins = 0,
+                numberOfEnergyPots = 0,
+                startX = agentStartX,
+                startY = agentStartY,
+                routeStartPointX = agentStartX,
+                routeStartPointY = agentStartY,
+                routeEndPointX = destinationX,
+                routeEndPointY = destinationY,
+                assetPrefab = agent,
+                plan = coordinates,
+                executedThePlan = false,
+                agentVisitedBuildings = isBuildingVisited
+            };
+
+            agents[i] = currentAgent;
+
+            savedDataArray[i, 0] = false; //bank
+            savedDataArray[i, 1] = false; //woodstore
+            savedDataArray[i, 2] = false; //toolstore
+
         }
         GridManager.Instance.findDistance = true;
     }
@@ -220,72 +237,154 @@ public class AgentMovement : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (moveAgents && !executedThePlan[i+1])
+        if (moveAgents && !agents[i].executedThePlan)
         {
-            i++;
-            //moveAgents = false;
-            MovePlayer(GridManager.Instance.agentsPaths[i], agentsGObj[i]);
+            //
+            // Move player to target position
+            //
+            MovePlayer(GridManager.Instance.agentsPaths[i], agents[i].assetPrefab);
 
-            agentsAttributes[i, 5] = agentsAttributes[i, 7];
-            agentsAttributes[i, 6] = agentsAttributes[i, 8];
-            Vector2 currentPosition = new(agentsAttributes[i, 5], agentsAttributes[i, 6]);
+            //
+            // Updating agents' plan
+            // Assigning new destination for each agent 
+            //
+            agents[i].routeStartPointX = agents[i].routeEndPointX;
+            agents[i].routeStartPointY = agents[i].routeEndPointY;
+            Vector2 currentPosition = new(agents[i].routeStartPointX, agents[i].routeStartPointY);
             if (currentPosition == BANK_COORDINATES)
             {
-                agentVisitedBuildings[i]["bank"] = true;
+                // Keeping previous visited booleans for each agent
+                agents[i].agentVisitedBuildings["bank"] = true;
+                agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i,1];
+                agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i,2];
+                savedDataArray[i, 0] = true;
+
                 print("Agent " + i + " arrived at the bank!");
-                myVector = new Vector2(0, 0);
-                if (plan[i].TryGetValue("woodStore", out myVector))
+                if (agents[i].agentVisitedBuildings["woodStore"] == false)
                 {
-                    plan[i]["woodStore"] = WOOD_STORE_COORDINATES;
-                    agentsAttributes[i, 7] = (int)WOOD_STORE_COORDINATES.x;
-                    agentsAttributes[i, 8] = (int)WOOD_STORE_COORDINATES.y;
+                    agents[i].plan["woodStore"] = WOOD_STORE_COORDINATES;
+                    agents[i].routeEndPointX = (int)WOOD_STORE_COORDINATES.x;
+                    agents[i].routeEndPointY = (int)WOOD_STORE_COORDINATES.y;
+                }
+                else if (agents[i].agentVisitedBuildings["toolStore"] == false)
+                {
+                    agents[i].plan["toolStore"] = TOOL_STORE_COORDINATES;
+                    agents[i].routeEndPointX = (int)TOOL_STORE_COORDINATES.x;
+                    agents[i].routeEndPointY = (int)TOOL_STORE_COORDINATES.y;
                 }
                 else
                 {
-                    print("surprise motherfucker");
+                    agents[i].routeEndPointX = agents[i].startX;
+                    agents[i].routeEndPointY = agents[i].startY;
                 }
             }
             else if (currentPosition == WOOD_STORE_COORDINATES)
             {
-                agentVisitedBuildings[i]["woodStore"] = true;
+                // Keeping previous visited booleans for each agent
+                agents[i].agentVisitedBuildings["woodStore"] = true;
+                agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
+                agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i, 2];
+                savedDataArray[i, 1] = true;
+
                 print("Agent " + i + " arrived at the woodStore!");
-                myVector = new Vector2(0, 0);
-                if (plan[i].TryGetValue("toolStore", out myVector))
+                if (agents[i].agentVisitedBuildings["bank"] == false)
                 {
-                    plan[i]["toolStore"] = TOOL_STORE_COORDINATES;
-                    agentsAttributes[i, 7] = (int)TOOL_STORE_COORDINATES.x;
-                    agentsAttributes[i, 8] = (int)TOOL_STORE_COORDINATES.y;
+                    agents[i].plan["bank"] = BANK_COORDINATES;
+                    agents[i].routeEndPointX = (int)BANK_COORDINATES.x;
+                    agents[i].routeEndPointY = (int)BANK_COORDINATES.y;
+                }
+                else if (agents[i].agentVisitedBuildings["toolStore"] == false)
+                {
+                    agents[i].plan["toolStore"] = TOOL_STORE_COORDINATES;
+                    agents[i].routeEndPointX = (int)TOOL_STORE_COORDINATES.x;
+                    agents[i].routeEndPointY = (int)TOOL_STORE_COORDINATES.y;
+                }
+                else
+                {
+                    agents[i].routeEndPointX = agents[i].startX;
+                    agents[i].routeEndPointY = agents[i].startY;
                 }
             }
             else if (currentPosition == TOOL_STORE_COORDINATES)
             {
-                agentVisitedBuildings[i]["toolStore"] = true;
+                // Keeping previous visited booleans for each agent
+                agents[i].agentVisitedBuildings["toolStore"] = true;
+                agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i, 1];
+                agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
+                savedDataArray[i, 2] = true;
+
                 print("Agent " + i + " arrived at the toolStore!");
-                if (agentVisitedBuildings[i].GetValueOrDefault("bank",true) && agentVisitedBuildings[i].GetValueOrDefault("woodstore", true))
+                if (agents[i].agentVisitedBuildings["bank"] == false)
                 {
-                    agentsAttributes[i, 7] = agentsAttributes[i, 3];
-                    agentsAttributes[i, 8] = agentsAttributes[i, 4];
+                    agents[i].plan["bank"] = BANK_COORDINATES;
+                    agents[i].routeEndPointX = (int)BANK_COORDINATES.x;
+                    agents[i].routeEndPointY = (int)BANK_COORDINATES.y;
+                }
+                else if (agents[i].agentVisitedBuildings["woodStore"] == false)
+                {
+                    agents[i].plan["woodStore"] = WOOD_STORE_COORDINATES;
+                    agents[i].routeEndPointX = (int)WOOD_STORE_COORDINATES.x;
+                    agents[i].routeEndPointY = (int)WOOD_STORE_COORDINATES.y;
+                }
+                else
+                {
+                    agents[i].routeEndPointX = agents[i].startX;
+                    agents[i].routeEndPointY = agents[i].startY;
                 }
             }
-            else if (currentPosition == new Vector2(agentsAttributes[i, 3], agentsAttributes[i, 4]))
+            else if (currentPosition == new Vector2(agents[i].startX, agents[i].startY))
             {
-                print("Agent " + i + " executed his plan!");
-                executedThePlan[i] = true;
+                // Keeping previous visited booleans for each agent
+                agents[i].agentVisitedBuildings["bank"] = savedDataArray[i, 0];
+                agents[i].agentVisitedBuildings["woodStore"] = savedDataArray[i, 1];
+                agents[i].agentVisitedBuildings["toolStore"] = savedDataArray[i, 2];
+
+                if (agents[i].agentVisitedBuildings["bank"] == true && agents[i].agentVisitedBuildings["woodStore"] == true && agents[i].agentVisitedBuildings["toolStore"] == true)
+                {
+                    print("Agent " + i + " returned home. Plan executed!");
+                    agents[i].executedThePlan = true;
+                    numberOfAgentsFinished++;
+                }
             }
             else
             {
                 print("Agent " + i + " is in position: "+ currentPosition);
             }
 
+            //
+            // Calling pathfinding when each agents has finished his trip
+            //
             if (i == numberOfAgents - 1)
             {
-                i = -1;
+                i = 0;
                 moveAgents = false;
                 GridManager.Instance.findDistance = true;
             }
+            else
+            {
+                i++;
+            }
+            
+
+            //
+            // When all agents have completed all of their tasks
+            //
+            if (numberOfAgentsFinished == numberOfAgents)
+            {
+                for (int j = 0; j < numberOfAgents; j++)
+                {
+                    target = new Vector2(agents[j].startX, agents[j].startY);
+                    agents[j].assetPrefab.transform.position = target;
+                }
+                print("All agents completed their tasks");
+            }
+            
         }
     }
 
+    //
+    // Moving agent on shortest path
+    //
     public void MovePlayer(List<Tile> path, GameObject myAgent)
     {
         // Foreach tile in list (list = shortest path)
@@ -296,14 +395,4 @@ public class AgentMovement : MonoBehaviour
                 myAgent.transform.position = target;
         }
     }
-    
-    
-    /*
-    public void MovePlayer(Tile tile, GameObject myAgent)
-    {
-        target = new Vector3(tile.x, tile.y + constant, 0);
-        while (myAgent.transform.position != target)
-            myAgent.transform.position = target;
-    }
-    */
 }

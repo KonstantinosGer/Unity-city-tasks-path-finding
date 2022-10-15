@@ -8,7 +8,6 @@ public class UnitManager : MonoBehaviour
     public static UnitManager Instance;
 
     private List<ScriptableUnit> _units;
-    //public BaseGold SelectedHero;
 
     [SerializeField] private int GoldCount, EnergyPotCount;
 
@@ -26,6 +25,9 @@ public class UnitManager : MonoBehaviour
         SpawnEnergyPot();
     }
 
+    //
+    // Spawning gold randomnly into the Grid
+    //
     public void SpawnGold()
     {
         GoldCount = 100;
@@ -44,10 +46,11 @@ public class UnitManager : MonoBehaviour
             //see Tile script 
             randomSpawnTile.SetUnit(spawnedGold);
         }
-
-        //GameManager.Instance.ChangeState(GameState.SpawnEnergyPot);
     }
 
+    //
+    // Spawning energy pots randomnly into the Grid
+    //
     public void SpawnEnergyPot()
     {
         EnergyPotCount = 100;
@@ -63,24 +66,16 @@ public class UnitManager : MonoBehaviour
                 randomSpawnTile.OccupiedUnit = spawnedEnergyPot;
                 spawnedEnergyPot.OccupiedTile = randomSpawnTile;
             }
-
+            //see Tile script 
             randomSpawnTile.SetUnit(spawnedEnergyPot);
         }
-
-        //GameManager.Instance.ChangeState(GameState.HeroesTurn);
-        //GameManager.Instance.ChangeState(GameState.Null);
     }
 
-    //generic function for returning a random prefab (gold or energy pot)
+    //
+    // Generic function for returning a random prefab (gold or energy pot)
+    //
     private T GetRandomUnit<T>(Faction faction) where T : BaseUnit
     {
         return (T)_units.Where(u => u.Faction == faction).OrderBy(o => Random.value).First().UnitPrefab;
     }
-
-    public void SetSelectedHero(BaseGold hero)
-    {
-        //SelectedHero = hero;
-        //MenuManager.Instance.ShowSelectedHero(hero);
-    }
-   
 }

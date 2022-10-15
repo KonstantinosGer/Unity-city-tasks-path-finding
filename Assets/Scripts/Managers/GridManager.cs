@@ -8,13 +8,10 @@ using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {
-    //
-    //public int count = 0;
-    //
     public static GridManager Instance;
 
     [SerializeField] public int _width, _height;
-    public int scale = 1;
+    public int scale;
 
     [SerializeField] private Tile _grassTile, _forbiddenTile;
     [SerializeField] public GameObject rock;
@@ -25,14 +22,10 @@ public class GridManager : MonoBehaviour
     public Dictionary<int, List<Tile>> agentsPaths; // store path for each of (numberOfAgents) agent
 
     public bool findDistance = false;
-    public List<Tile> path = new List<Tile>();
-    public int startX = 0;
-    public int startY = 0;
-    public int endX = 5;
-    public int endY = 5;
+    public List<Tile> path = new();
     Vector2 myVector;
 
-    public int i = -1;
+    public int index;
 
 
     void Awake()
@@ -40,47 +33,57 @@ public class GridManager : MonoBehaviour
         Instance = this;
         GenerateGrid();
         agentsPaths = new Dictionary<int, List<Tile>>();
+
+        scale = 1;
+        index = 0;
     }
 
-    void Start()
-    {
-        //GenerateGrid();
-        //Debug.Log(GetTileAtPosition(myVector));
-        
-    }
 
     private void Update()
     {
-        
-        if (findDistance && !AgentMovement.Instance.executedThePlan[i + 1])
+        //
+        // Starting Pathfinding algorithm
+        //
+
+        if (findDistance)
         {
-            i++;
-            
-
-            InitialSetUp(i);
-
-            // Propagate all the numbers
-            SetDistance();
-            // Give us an array
-            SetPath(i);
-
-
-            path.Reverse();
-            agentsPaths[i] = path;
-
-
-            if(i == AgentMovement.Instance.numberOfAgents -1)
+            if (!AgentMovement.Instance.agents[index].executedThePlan)
             {
-                i = -1;
-                AgentMovement.Instance.moveAgents = true;
-                // Set findDistance to false so it doesn't keep doing this over and over again
-                findDistance = false;
-            }
+                InitialSetUp(index);
 
+                // Propagate all the numbers
+                SetDistance();
+                // Give us an array
+                SetPath(index);
+
+
+                path.Reverse();
+                agentsPaths[index] = path;
+
+
+                if (index == AgentMovement.Instance.numberOfAgents - 1)
+                {
+                    index = 0;
+
+                    // Set findDistance to false so it doesn't keep doing this over and over again
+                    findDistance = false;
+
+                    AgentMovement.Instance.moveAgents = true;
+
+                }
+                else
+                {
+                    index++;
+                }
+            }
         }
     }
 
 
+
+    //
+    // Checking coordinates are the entrace of Bank/Woodstore/Toolstore
+    //
     public bool isBuildingEntrance(int x, int y)
     {
         if(x == 53 && y == 82)
@@ -98,6 +101,9 @@ public class GridManager : MonoBehaviour
         return false;
     }
 
+    //
+    // Checking if we are inside Bank/Woodstore/Toolstore
+    //
     public bool isBuildingArea(int x, int y)
     {
         if(x >= 43 && x <= 57 && y >= 83 && y <= 97)
@@ -114,6 +120,11 @@ public class GridManager : MonoBehaviour
         }
         return false;
     }
+
+
+    //
+    // Generating a dynamic grid consisting of walkable tiles and forbidden tiles
+    //
     public void GenerateGrid()
     {
         _tiles = new Dictionary<Vector2, Tile>();
@@ -126,7 +137,6 @@ public class GridManager : MonoBehaviour
 
                 if(randomTile == _forbiddenTile)
                 {
-                    //Vector3 vector3 = new(_forbiddenTile.x, _forbiddenTile.y);
                     Instantiate(rock, new Vector3(i, j), Quaternion.identity);
                 }
 
@@ -146,19 +156,15 @@ public class GridManager : MonoBehaviour
         //adjusting camera view
         _cam.transform.position = new Vector3((float)_width / 2 - 0.5f, (float)_height / 2 - 0.5f, -10);
 
-
-        //GameManager.Instance.ChangeState(GameState.SpawnGold);
     }
 
     
-
-    //getSpawnTile for gold and energyPot
+    //
+    // GetSpawnTile for gold and energyPot
+    //
     public Tile GetSpawnTile()
     {
-        //count++;
-        //print("i make a coin or potion. Count: "+count);
         return _tiles.Where(t => t.Value.Walkable).OrderBy(t => Random.value).First().Value;
-        // && !Buildings.Instance.buildingsTiles.Contains(_tiles[t.Key])
     }
 
 
@@ -175,7 +181,7 @@ public class GridManager : MonoBehaviour
     }
 
 
-    // Set up the gridArray so we can label the points
+    // Setting up the gridArray so we can label the points
     void InitialSetUp(int agentId)
     {
         foreach (var tile in _tiles)
@@ -184,12 +190,14 @@ public class GridManager : MonoBehaviour
             tile.Value.visited = -1;
         }
         // Only starting position is labeled with 0
-        //Agent currentAgent = AgentMovement.Instance.agents[agentId];
-        myVector = new Vector2(AgentMovement.Instance.agentsAttributes[agentId,5], AgentMovement.Instance.agentsAttributes[agentId,6]);
-        //myVector = new Vector2(startX, startY);
+        myVector = new Vector2(AgentMovement.Instance.agents[agentId].routeStartPointX, AgentMovement.Instance.agents[agentId].routeStartPointY);
         _tiles[myVector].visited = 0;
     }
 
+
+    //
+    // Checking (on each direction) for the optimum next tile of path 
+    //
     bool TestDirection(int x, int y, int step, int direction)
     {
         // int direction tells which case to use.
@@ -252,6 +260,7 @@ public class GridManager : MonoBehaviour
         return false;
     }
 
+
     void TestFourDirections(int x, int y, int step)
     {
         if (TestDirection(x, y, -1, 1))
@@ -264,12 +273,11 @@ public class GridManager : MonoBehaviour
             SetVisited(x - 1, y, step);
     }
 
+    //
+    // Iterrating over grid and calling TestFourDirections for next tile in path
+    //
     void SetDistance()
     {
-        //int x = 0;
-        //int y = 0;
-        //int[] testArray = new int[_height * _width]; //bigger than any number of steps i will ever do
-
         for (int step = 1; step < _height * _width; step++)
         {
             // Going through the whole gridArray and checking all the different objects
@@ -277,28 +285,28 @@ public class GridManager : MonoBehaviour
             {
                 if (tile.Value.visited == step - 1)
                 {
-                    // Checking everything around the object i currently am
-                    // As long as it's -1, i'm going to change it based on the step
+                    // Checking everything around the object we currently are
+                    // As long as it's -1, we are going to change it based on the step
                     TestFourDirections(tile.Value.x, tile.Value.y, step);
                 }
             }
         }
     }
 
-
+    //
+    // Setting the shortest path for destination
+    //
     void SetPath(int agentId)
     {
         int step;
-        //Agent currentAgent = AgentMovement.Instance.agents[agentId];
-        //myVector = new Vector2(currentAgent.route, currentAgent.routeStartPointY);
-        int x = AgentMovement.Instance.agentsAttributes[agentId, 7];
-        int y = AgentMovement.Instance.agentsAttributes[agentId, 8];
-        List<Tile> tempList = new List<Tile>();
-        // At first, clear any path i might already have
+        int x = AgentMovement.Instance.agents[agentId].routeEndPointX;
+        int y = AgentMovement.Instance.agents[agentId].routeEndPointY;
+        List<Tile> tempList = new();
+
+        // At first, clear any path we might already have
         path.Clear();
 
-        // Make sure gridArray[endX, endY] exists
-        // And it must be > 0
+
         // if it's -1, it means we can't get there
         myVector = new Vector2(x, y);
         if (_tiles[myVector] && _tiles[myVector].visited > 0)
@@ -308,9 +316,6 @@ public class GridManager : MonoBehaviour
             path.Add(_tiles[myVector]);
             // We started from the ending and then we go to the next lowest repeatedly
             step = _tiles[myVector].visited - 1;
-
-            //print("tile: " + _tiles[myVector] + ", visited: " + _tiles[myVector].visited);
-            //print("path: " + path);
         }
         else
         {
@@ -357,21 +362,20 @@ public class GridManager : MonoBehaviour
             x = tempTile.x;
             y = tempTile.y;
             tempList.Clear();
-
-            //print("tempTile: " + tempTile);
         }
 
     }
 
     void SetVisited(int x, int y, int step)
     {
-        // if gridArray[x,y] exists
         myVector = new Vector2(x, y);
         if (_tiles[myVector])
             _tiles[myVector].visited = step;
     }
 
-    //From all possible paths, we want to keep the optimal (shortest) path
+    //
+    // From all possible paths, we keep the optimal (shortest) path
+    //
     Tile FindClosest(Transform targetLocation, List<Tile> list)
     {
         // Initialize currentDistance with something realy big

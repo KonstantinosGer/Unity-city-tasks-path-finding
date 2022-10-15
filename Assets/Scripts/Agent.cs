@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Agent
+public class Agent:MonoBehaviour
 {
-    //public static Agent Instance;
+    public static Agent Instance;
 
     public int id;
     public int energyPoints;
@@ -17,39 +18,14 @@ public class Agent
 
     //agents' plan
     public Dictionary<string, Vector2> plan;
+    public Dictionary<string, bool> agentVisitedBuildings;
+    public bool executedThePlan;
 
-    
-    public Agent(int id, int energyPoints, int numberOfCoins, int numberOfEnergyPots, int startX, int startY, int routeStartPointX, int routeStartPointY, int routeEndPointX, int routeEndPointY, GameObject assetPrefab)
+
+    public void Awake()
     {
-        this.id = id;
-        this.energyPoints = energyPoints;
-        this.numberOfCoins = numberOfCoins;
-        this.numberOfEnergyPots = numberOfEnergyPots;
-        this.startX = startX;
-        this.startY = startY;
-        this.routeStartPointX = routeStartPointX;
-        this.routeStartPointY = routeStartPointY;
-        this.routeEndPointX = routeEndPointX;
-        this.routeEndPointY = routeEndPointY;
+        Instance = this;
 
-        this.assetPrefab = assetPrefab;
-    }
-    
-
-    void Start()
-    {
-        energyPoints = 100;
-        numberOfCoins = 0;
-        numberOfEnergyPots = 0;
-
-        plan = new Dictionary<string, Vector2>();
-        plan["bank"] = new Vector2(53,82);
-        plan["woodStore"] = new Vector2(0,0);
-        plan["toolStore"] = new Vector2(0,0);
-    }
-
-    void Update()
-    {
-        
+        agentVisitedBuildings = new Dictionary<string, bool>();
     }
 }
