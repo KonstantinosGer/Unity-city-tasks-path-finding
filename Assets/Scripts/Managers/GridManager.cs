@@ -1,10 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Burst.CompilerServices;
-using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class GridManager : MonoBehaviour
 {

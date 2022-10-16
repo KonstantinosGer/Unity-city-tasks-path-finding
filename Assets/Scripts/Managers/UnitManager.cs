@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -33,7 +32,7 @@ public class UnitManager : MonoBehaviour
     //
     public void SpawnGold()
     {
-        GoldCount = 200;
+        GoldCount = 250;
 
         for (int i = 0; i <= GoldCount; i++)
         {
@@ -61,7 +60,7 @@ public class UnitManager : MonoBehaviour
     //
     public void SpawnEnergyPot()
     {
-        EnergyPotCount = 250;
+        EnergyPotCount = 300;
 
         for (int i = 0; i <= EnergyPotCount; i++)
         {
