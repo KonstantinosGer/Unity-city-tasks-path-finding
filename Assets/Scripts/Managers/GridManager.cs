@@ -19,6 +19,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Transform _cam;
 
     public Dictionary<Vector2, Tile> _tiles;
+
     public Dictionary<int, List<Tile>> agentsPaths; // store path for each of (numberOfAgents) agent
 
     public bool findDistance = false;
@@ -26,6 +27,8 @@ public class GridManager : MonoBehaviour
     Vector2 myVector;
 
     public int index;
+
+
 
 
     void Awake()
@@ -45,12 +48,11 @@ public class GridManager : MonoBehaviour
         // Starting Pathfinding algorithm
         //
 
-        if (findDistance)
+        if (findDistance && !AgentMovement.Instance.agents[index].executedThePlan)
         {
-            if (!AgentMovement.Instance.agents[index].executedThePlan)
+
+            if (!AgentMovement.Instance.agents[index].hasDied)
             {
-                if (!AgentMovement.Instance.agents[index].hasDied)
-                {
                     InitialSetUp(index);
 
                     // Propagate all the numbers
@@ -60,27 +62,27 @@ public class GridManager : MonoBehaviour
 
 
                     path.Reverse();
-                    agentsPaths[index] = path;
-                }
+                agentsPaths[index] = path;
 
-                if (index == AgentMovement.Instance.numberOfAgents - 1)
+
+
+            }
+
+            if (index == AgentMovement.Instance.numberOfAgents - 1)
                 {
                     index = 0;
-
                     // Set findDistance to false so it doesn't keep doing this over and over again
                     findDistance = false;
 
                     AgentMovement.Instance.moveAgents = true;
 
-                }
-                else
-                {
-                    index++;
-                }
+            }
+            else
+            {
+                index++;
             }
         }
     }
-
 
 
     //
